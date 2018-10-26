@@ -1,3 +1,7 @@
+#other files
+.DS_Store
+botconfig.json
+
 # Logs
 logs
 *.log
