@@ -28,6 +28,36 @@ bot.on("message", async message => {
     const m = await message.channel.send("Ping?");
    m.edit(`Pong! Latency is ${m.createdTimestamp - message.createdTimestamp}ms. API Latency is ${Math.round(client.ping)}ms`);
   }
+
+
+  if(command === "units"){
+    let [arg1] = args;
+
+    try {
+        console.log('++ Testing units ++\n');
+        let payload = {
+            "allycodes": args,
+            "language": "eng_us"
+          };
+
+          var data = await swapi.fetchUnits(payload);
+
+          var units = 0;
+
+
+        for(var i in data){
+         if (i === "EMBO"){
+           var embo = JSON.stringify(data[i])
+             const m = await message.channel.send(embo);
+         }
+        }
+
+    } catch(e) {
+        throw e;
+    }
+  }
+
+
   if(command === "whtb"){
     let[arg1, arg2] = args;
     if(arg1 === "help")
