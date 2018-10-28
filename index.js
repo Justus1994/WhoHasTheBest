@@ -62,7 +62,7 @@ bot.on("message", async message => {
             var test2 = [];
 
             var msg = "";
-            for(var k = 0; k <= botconfig.MemberCount; k++){
+            for(var k = 0; k < this.data[key].length; k++){
               test.push(this.data[key][k].player);
               test2.push(this.data[key][k].gp);
               msg += this.data[i][k].player + " : " +  this.data[i][k].gp + "\n";
