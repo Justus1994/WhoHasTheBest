@@ -80,17 +80,28 @@ bot.on("message", async message => {
             console.log(i);
 
             var test = [];
-            var test2 = [];
+
 
             var msg = "";
             for(var k = 0; k < this.data[key].length; k++){
-              test.push(this.data[key][k].player);
-              test2.push(this.data[key][k].gp);
-              msg += this.data[i][k].player + " : " +  this.data[i][k].gp + "\n";
+              test.push(
+                {
+                  "name" : this.data[i][k].player,
+                  "gp" : this.data[key][k].gp});
+
+            //  msg += this.data[i][k].player + " : " +  this.data[i][k].gp + "\n";
             }
 
-            const m = await message.channel.send(i + ": \n" + msg);
-          
+
+
+            test.sort((a,b) => (a.gp < b.gp) ? 1 : (b.gp < a.gp) ? -1 : 0)
+
+            for(var a in test){
+            msg += test[a].name + " : " + test[a].gp + "\n";
+
+            }
+
+            const m = await message.channel.send(i + "\n" + msg);
          }
        }
 
