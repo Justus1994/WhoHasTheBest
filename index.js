@@ -1,15 +1,28 @@
 const botconfig = require("./botconfig.json");
 const Discord = require("discord.js");
 const ApiSwgohHelp = require('api-swgoh-help');
+const Fuse = require('fuse-js-latest');
+const bot = new Discord.Client();
 
 const swapi = new ApiSwgohHelp({
   "username" : botconfig.username,
   "password" : botconfig.password
 });
 
-var data;
+var options = {
+  shouldSort: true,
+  threshold: 0.6,
+  location: 0,
+  distance: 100,
+  maxPatternLength: 32,
+  minMatchCharLength: 1,
+  keys: [
+    "name"
+]
+};
 
-const bot = new Discord.Client();
+var data;
+var list = [];
 
 bot.on("ready", async () => {
   console.log(`${bot.user.username} is online`);
@@ -24,9 +37,16 @@ bot.on("ready", async () => {
 
   this.data =  await swapi.fetchUnits(payload);
 
+  for(var d in this.data){
+    list.push({
+      "name" : d
+    });
+  }
+
 });
 
 
+var fuse = new Fuse(list, options);
 
 
 bot.on("message", async message => {
@@ -53,7 +73,8 @@ bot.on("message", async message => {
 
     try {
         for(var i in this.data){
-         if (i === arg1.toUpperCase()){
+
+         if (i === fuse.search(arg1)[0].name){
            foundUnit = true;
            var key = i;
             console.log(i);
@@ -69,6 +90,7 @@ bot.on("message", async message => {
             }
 
             const m = await message.channel.send(i + ": \n" + msg);
+          
          }
        }
 
@@ -82,7 +104,5 @@ bot.on("message", async message => {
   }
 
 });
-
-
 
 bot.login(botconfig.token);
