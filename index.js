@@ -1,3 +1,4 @@
+require('dotenv').config();
 const botconfig = require("./botconfig.json");
 const Discord = require("discord.js");
 const ApiSwgohHelp = require('api-swgoh-help');
@@ -8,7 +9,7 @@ bot.commands = new Discord.Collection();
 
 fs.readdir("./commands/", (err, files) => {
 
-  if(err) { 
+  if(err) {
 	  console.log(err);
   }
 
@@ -39,13 +40,13 @@ bot.on("message", async message => {
   //to avoid loop
   if(message.author.bot) return;
   //only messages with prefix
-  if(message.content.indexOf(botconfig.prefix) !== 0) return;
+  if(message.content.indexOf(process.env.PREFIX) !== 0) return;
 
-  const args = message.content.slice(botconfig.prefix.length).trim().split(/ +/g);
+  const args = message.content.slice(process.env.PREFIX.length).trim().split(/ +/g);
   const command = args.shift().toLowerCase();
-  
+
   let commandFile = bot.commands.get(command);
   if(commandFile) commandFile.run(bot, message, args);
 });
 
-bot.login(botconfig.token);
+bot.login(process.env.BOT_TOKEN);
