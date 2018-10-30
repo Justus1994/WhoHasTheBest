@@ -1,4 +1,4 @@
-//const botconfig = require("../botconfig.json");
+
 const Discord = require("discord.js");
 const ApiSwgohHelp = require('api-swgoh-help');
 const Fuse = require('fuse-js-latest');
