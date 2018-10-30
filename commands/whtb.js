@@ -1,4 +1,4 @@
-const botconfig = require("../botconfig.json");
+//const botconfig = require("../botconfig.json");
 const Discord = require("discord.js");
 const ApiSwgohHelp = require('api-swgoh-help');
 const Fuse = require('fuse-js-latest');
@@ -31,7 +31,7 @@ module.exports.run = async (bot, message, args) => {
   try {
 
     let payload = {
-      "allycodes": process.env.SWGOH_AllYCODES.split(","),
+      "allycodes": process.env.SWGOH_ALLYCODES.split(","),
       "language": "eng_us"
     }
 

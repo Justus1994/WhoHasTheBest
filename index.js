@@ -1,10 +1,12 @@
 require('dotenv').config();
-const botconfig = require("./botconfig.json");
+require('http').createServer().listen(3000);
+//const botconfig = require("./botconfig.json");
 const Discord = require("discord.js");
 const ApiSwgohHelp = require('api-swgoh-help');
 const Fuse = require('fuse-js-latest');
 const bot = new Discord.Client();
 const fs = require("fs");
+
 bot.commands = new Discord.Collection();
 
 fs.readdir("./commands/", (err, files) => {
