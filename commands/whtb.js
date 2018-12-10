@@ -1,4 +1,3 @@
-
 const Discord = require("discord.js");
 const ApiSwgohHelp = require('api-swgoh-help');
 const Fuse = require('fuse-js-latest');
@@ -8,7 +7,7 @@ const swapi = new ApiSwgohHelp({
   "password": process.env.API_PW
 });
 
-var list = [];
+var list;
 
 var options = {
   shouldSort: true,
@@ -22,14 +21,17 @@ var options = {
   ]
 };
 
+var searchResult = [];
 var fuse = new Fuse(list, options);
-var emojis = [":crown:", ":dark_sunglasses:", ":lizard:", ":poop:"];
+var emojis = [":crown:", ":second_place:", ":lizard:", ":poop:"];
+
 module.exports.run = async (bot, message, args) => {
   var foundUnit = false;
-  let [arg1] = args;
+
+  let [arg1, arg2] = args;
 
   try {
-
+    list = [];
     let payload = {
       "allycodes": process.env.SWGOH_ALLYCODES.split(","),
       "language": "eng_us"
@@ -45,46 +47,47 @@ module.exports.run = async (bot, message, args) => {
     console.log("Units loaded");
 
 
-    for (var i in units) {
 
+    for (var i in units) {
       if (i === fuse.search(arg1)[0].name) {
+
         foundUnit = true;
         var key = i;
-        console.log(i);
-
-        var test = [];
-
+        var sortList = [];
         let embed = {};
 
         for (var k = 0; k < units[key].length; k++) {
-          test.push({
+          sortList.push({
             "name": units[i][k].player,
             "gp": units[key][k].gp
           });
-
-          //  msg += this.data[i][k].player + " : " +  this.data[i][k].gp + "\n";
         }
 
-
-
-        test.sort((a, b) => (a.gp < b.gp) ? 1 : (b.gp < a.gp) ? -1 : 0)
+        sortList.sort((a, b) => (a.gp < b.gp) ? 1 : (b.gp < a.gp) ? -1 : 0)
 
         embed.title = '**' + i + '**';
         embed.description = '------------------------------\n\n';
+
         var index = 0;
-        for (var a in test) {
-          embed.description += '**' + test[a].name + "** : " + test[a].gp;
 
-          if(index < 3)
-          embed.description += "   "  + emojis.shift();
+        for (var a in sortList) {
+          embed.description += '**' + sortList[a].name + "** : " + sortList[a].gp;
 
-          if(index === test.length -1)
-          embed.description += emojis.shift();
+          if (index < 3)
+            embed.description += "   " + emojis.shift();
+
+          if (index === test.length - 1)
+            embed.description += emojis.shift();
+
 
           embed.description += "\n";
           index++;
         }
-        emojis = [":crown:", ":dark_sunglasses:", ":lizard:", ":poop:"];
+        emojis = [":crown:", ":second_place:", ":lizard:", ":poop:"];
+
+
+
+
         const m = await message.channel.send({
           embed
         });
@@ -97,7 +100,7 @@ module.exports.run = async (bot, message, args) => {
     }
   } catch (e) {
     throw e;
-  }
+    }
 }
 
 module.exports.help = {
