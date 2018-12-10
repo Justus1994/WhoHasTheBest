@@ -7,7 +7,7 @@ const swapi = new ApiSwgohHelp({
   "password": process.env.API_PW
 });
 
-var list;
+var list = [];
 
 var options = {
   shouldSort: true,
@@ -31,7 +31,7 @@ module.exports.run = async (bot, message, args) => {
   let [arg1, arg2] = args;
 
   try {
-    list = [];
+
     let payload = {
       "allycodes": process.env.SWGOH_ALLYCODES.split(","),
       "language": "eng_us"
@@ -53,7 +53,7 @@ module.exports.run = async (bot, message, args) => {
 
         foundUnit = true;
         var key = i;
-        var sortList = [];
+        let sortList = [];
         let embed = {};
 
         for (var k = 0; k < units[key].length; k++) {
@@ -76,7 +76,7 @@ module.exports.run = async (bot, message, args) => {
           if (index < 3)
             embed.description += "   " + emojis.shift();
 
-          if (index === test.length - 1)
+          if (index === sortList.length - 1)
             embed.description += emojis.shift();
 
 
@@ -85,15 +85,13 @@ module.exports.run = async (bot, message, args) => {
         }
         emojis = [":crown:", ":second_place:", ":lizard:", ":poop:"];
 
-
-
-
         const m = await message.channel.send({
           embed
         });
       }
     }
 
+    list = [];
     if (foundUnit === false) {
       const m = await message.channel.send("no Unit with name : " + arg1);
       foundUnit = false;
