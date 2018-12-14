@@ -32,8 +32,6 @@ fs.readdir("./commands/", (err, files) => {
 bot.on("ready", async () => {
   console.log(`${bot.user.username} is online`);
   bot.user.setActivity("Swgoh");
-
-  console.log("collect data");
 });
 
 

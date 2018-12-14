@@ -7,9 +7,9 @@ const swapi = new ApiSwgohHelp({
   "password": process.env.API_PW
 });
 
-var list = [];
+let list = [];
 
-var options = {
+let options = {
   shouldSort: true,
   threshold: 0.6,
   location: 0,
@@ -21,51 +21,52 @@ var options = {
   ]
 };
 
-var searchResult = [];
-var fuse = new Fuse(list, options);
-var emojis = [":crown:", ":second_place:", ":lizard:", ":poop:"];
+let searchResult = [];
+let fuse = new Fuse(list, options);
+let emojis = [":crown:", ":second_place:", ":lizard:", ":poop:"];
 
 module.exports.run = async (bot, message, args) => {
-  var foundUnit = false;
 
-  let [arg1, arg2] = args;
+  let [arg1, arg2, arg3] = args;
 
   try {
-
     let payload = {
       "allycodes": process.env.SWGOH_ALLYCODES.split(","),
-      "language": "eng_us"
-    }
+      "language": "eng_us"    }
+
+    let payload2 = {
+      "allycodes" : 282167359,
+      "language": "eng_us" }
+
+    let realNames = await swapi.fetchPlayer(payload2);
+    realNames = realNames[0];
 
     let units = await swapi.fetchUnits(payload);
-    for (var d in units) {
-      list.push({
-        "name": d
-      });
-    }
 
-    console.log("Units loaded");
-
-
+    realNames.roster.forEach((e) => {
+          list.push({
+            "name" : e.nameKey,
+            "nameID" : e.defId,
+          });
+    });
 
     for (var i in units) {
-      if (i === fuse.search(arg1)[0].name) {
-
-        foundUnit = true;
-        var key = i;
+      let searchString = args.toString().replace(/,/g," ");
+      if (i === fuse.search(searchString)[0].nameID) {
+        let unitName = fuse.search(searchString)[0].name;
         let sortList = [];
         let embed = {};
 
-        for (var k = 0; k < units[key].length; k++) {
+        for (var k = 0; k < units[i].length; k++) {
           sortList.push({
             "name": units[i][k].player,
-            "gp": units[key][k].gp
+            "gp": units[i][k].gp
           });
         }
 
-        sortList.sort((a, b) => (a.gp < b.gp) ? 1 : (b.gp < a.gp) ? -1 : 0)
+        sortList.sort((a, b) => (a.gp < b.gp) ? 1 : (b.gp < a.gp) ? -1 : 0);
 
-        embed.title = '**' + i + '**';
+        embed.title = '**' + unitName + '**';
         embed.description = '------------------------------\n\n';
 
         var index = 0;
@@ -92,10 +93,7 @@ module.exports.run = async (bot, message, args) => {
     }
 
     list = [];
-    if (foundUnit === false) {
-      const m = await message.channel.send("no Unit with name : " + arg1);
-      foundUnit = false;
-    }
+
   } catch (e) {
     throw e;
     }
